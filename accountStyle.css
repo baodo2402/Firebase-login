@@ -1,0 +1,73 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700&display=swap");
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Poppins", sans-serif;
+
+}
+
+body {
+    margin: 0;
+    padding: 0;
+  }
+  
+.task_bar {
+  list-style: none;
+  background: rgb(135, 206, 235);
+  padding: 10px;
+
+}
+.task_bar li {
+  display: inline-block;
+  position: relative
+}
+.task_bar li a {
+  display: block;
+  padding: 20px 25 px;
+  color: #fff;
+  text-decoration: none;
+  text-align: center;
+  font-size: 20px;
+}
+
+.task_bar li ul.dropDownConTent li {
+  display: block;
+
+}
+.task_bar li ul.dropDownContent {
+  width: 100%;
+  background: #22438C;
+  position: absolute;
+  z-index: 999;
+  display: none;
+}
+
+.task_bar li a:hover {
+  background: #bfe5d9;
+  -webkit-text-stroke: 1px #000;
+
+}
+.task_bar li:hover ul.dropDownContent {
+  display: block;
+}
+.task_bar .logOut {
+  position: absolute;
+  right: 10px;
+  background: #ffc0cb;
+  padding: 7px;
+  font-weight: 900;
+  border-radius: 10%;
+}
+
+
+.punch_frame {
+  background: #bfe5d9;
+
+}
+.punch_frame .getMyLocation {
+  background: #ffc0cb;
+  padding: 7px;
+  font-weight: 900;
+  border-radius: 10%;
+}

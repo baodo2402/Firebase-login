@@ -1,0 +1,100 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700&display=swap");
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Poppins", sans-serif;
+}
+
+body{
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f0faff;
+}
+
+.Title{
+    position: absolute;
+    top: 40px;
+    font-size: larger;
+    font-weight: 900;
+}
+h1.register_heading{
+    text-align: center;
+}
+
+#login-box{
+    position: relative;
+    background: rgb(135, 206, 235);
+    border-radius: 8%;
+
+    font-weight: 600;
+    padding: 20px;
+    width: 60%;
+    margin: 50px auto;
+    
+}
+
+#login-box .log_in {
+    display: flex;
+    flex-direction: column;
+}
+#login-box .log_in input[type="submit"]#login{
+    border-radius: 10%;
+    background: #ffc0cb;
+    font-weight: 600;
+}
+
+@media screen and (min-width: 768px) {
+    #login-box {
+        width: 60%;
+        margin: 50px auto;
+        padding: 40px;
+    }
+
+                    .register input[type="text"],
+                    .register input[type="email"],
+                    .register input[type="password"],
+                    .log_in input[type="text"],
+                    .log_in input[type="password"] {
+                        padding: 5px 10px;
+                        font-size: 18px;
+                    }
+
+    #login-box .register input[type="submit"]#signup{
+        border-radius: 10%;
+        background: #FFC0CB;
+        font-weight: 600;
+    }
+    #login-box input[type="submit"]#signup{
+        border-radius: 10%;
+        background: #FFC0CB;
+        font-weight: 600;  
+    }
+
+                    
+
+                        
+}
+
+@media screen and (max-width: 480px) {
+    #login-box{
+        width: 90%;
+        margin: 30px auto;
+        padding: 20px;
+    
+    }
+}
+.register{
+    margin-top: 20px;
+    background: #bfe5d9;
+    display: flex;
+    flex-direction: column;
+    
+}
+
+h1.login_heading {
+    text-align: center;
+}
+

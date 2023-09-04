@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>User Account</title>
+
+  <link rel="stylesheet" type="text/css" href="accountStyle.css">
+</head>
+<body>
+  <ul class="task_bar">
+      <li class ="dropDown">
+            <a href="#" class="dropButton">About You</a>
+            <ul class="dropDownContent">
+              <li><a href="userInformation.html">Your account</a></li>
+              <li><a href="view_payslip.html">View payslip</a></li>
+            </ul>
+      </li>
+      <button class="logOut">Log Out</button>
+  </ul>
+      
+    
+  
+  <section id="welcome">
+    <div id="username-display"></div>
+  </section>
+
+  <div class = "punch_frame">
+    <h1 class="status"></h1>
+    <p>To start and finish work, <br> please clock in and clock out on time you start and finish</p>
+    <button class="getMyLocation">Get My Location</button>
+
+  </div>
+
+  <script type="module">
+    // account.js
+    // Import the functions you need from the SDKs you need
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-app.js";
+    import { getDatabase, ref, set, update } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-database.js";
+    import { getAuth, signOut, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-auth.js";
+
+    // Your web app's Firebase configuration
+    const firebaseConfig = {
+        apiKey: "AIzaSyBZxcfIFnaEEBX7z5oI_BWarYpG2txmH3M",
+        authDomain: "test-firebase-a7bb8.firebaseapp.com",
+        databaseURL: "https://test-firebase-a7bb8-default-rtdb.asia-southeast1.firebasedatabase.app",
+        projectId: "test-firebase-a7bb8",
+        storageBucket: "test-firebase-a7bb8.appspot.com",
+        messagingSenderId: "1068724998824",
+        appId: "1:1068724998824:web:87a61749492299bdbaa89d"
+        };
+
+      // Initialize Firebase
+      const app = initializeApp(firebaseConfig);
+      const database = getDatabase(app);
+      const auth = getAuth();
+
+
+      document.addEventListener("DOMContentLoaded", function () {
+      // Fetch the user's username and update the HTML
+      const user = auth.currentUser;
+      if (user) {
+        const userRef = ref(database, 'users/' + user.uid);
+        get(userRef).then((snapshot) => {
+          const userData = snapshot.val();
+          const username = userData.username;
+          const usernameDisplay = document.getElementById('username-display');
+          usernameDisplay.textContent = "Welcome, " + username + "!";
+        });
+      }
+      });
+
+
+// ...
+ //use either of these APIs, the second one prefered
+  //`https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${latitude}&longitude=${longitude}&localityLanguage=en`
+  //'https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}'
+  const findMyLocation = () => {
+    const status = document.querySelector('.status');
+
+    const success = (position) => {
+      console.log(position)
+      const latitude = position.coords.latitude;
+      const longitude = position.coords.longitude;
+      //console.log(latitude + " " + longitude)
+  
+      //a free API used to transfer lat and lon to suburbs/city name
+      const geoApiUrl = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`
+  
+      fetch(geoApiUrl)
+      .then(res => res.json())
+      .then(data => {
+        console.log(data)
+        const suburbToBuilding = {
+          "Waterloo": "Soho",
+          
+        }
+        //const urlParams = new URLSearchParams(window.location.search); (URL store) (not recommended)
+        if(data.address.suburb == "Waterloo")
+        {
+          status.textContent = "You're working at Soho " + data.address.suburb
+        }
+        else{
+          status.textContent = "You are not on-site, please try again"
+        }
+
+        //Local Storage
+        //const username = localStorage.getItem('username');
+        //const email = localStorage.getItem('email');
+
+        const user = auth.currentUser;
+        if (user) {
+              const userRef = ref(database, 'users/' + user.uid);
+              // from database
+              // get(userRef).then((snapshot) => {
+              //   const userData = snapshot.val();
+              //   const username = userData.username;
+              //   const email = userData.email;
+              //})
+              //
+              update(userRef, {
+                //email: email,
+                //username: username,s
+                locality: data.address
+                });
+            }
+      })
+      .catch(error => {
+          console.error('Error fetching data:', error);
+        });
+    }
+  
+    const error = () => {
+      status.textContent = 'Unble to retrieve your location, please unblock the location permission in your browser'
+  
+    }
+  
+    navigator.geolocation.getCurrentPosition(success, error);
+  }
+
+
+
+  
+  
+  document.querySelector('.getMyLocation').addEventListener('click', findMyLocation);
+
+  //Log out Button
+  const logOutButton = document.querySelector(".logOut");
+  logOutButton.addEventListener("click", () => {
+    //e.preventDefault();
+    console.log("Logout button clicked!");
+    signOut(auth)
+    //redirect to register and login page
+      .then(() => {
+        console.log("User logged out successfully!");
+        window.location.href = "index.html";
+      })
+      .catch((error) => {
+        console.log("Error during log out: ", error);
+      });
+
+  })
+  </script>
+</body>
+</html>

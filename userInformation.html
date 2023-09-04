@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    
+        <title>Firebase Auth</title>
+        <link rel="stylesheet" href="userStyle.css" />
+      </head>
+<body>
+    <h1>Your Information</h1>
+    
+
+    <div id="user_info">
+        <form class="info">
+          <h1>Change your Information if needed</h1>
+
+          <label for="new-username">New User Name:</label>
+          <input type="text" id="new-username" name="new-username" placeholder="User Name" />
+          <button id="update-username" >Update User Name</button>
+
+          <label for="new-email">New Email:</label>
+          <input type="text" id="new-email" name="new-email" placeholder="Email" />
+          <button id="update-email">Update Email</button>
+
+          <label for="new-password">New Password:</label>
+          <input type="password" id="new-password" name="new-password" placeholder="Password" />
+          <button id="update-password">Update Password</button>
+
+        </form>
+    </div>
+
+</body>
+
+
+
+
+<script type="module">
+    // Import the functions you need from the SDKs you need
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-app.js";
+    import { getDatabase, ref, set, update } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-database.js";
+    import { getAuth, onAuthStateChanged, updateEmail, updatePassword } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-auth.js";
+    
+
+      // Your web app's Firebase configuration
+      const firebaseConfig = {
+      apiKey: "AIzaSyBZxcfIFnaEEBX7z5oI_BWarYpG2txmH3M",
+      authDomain: "test-firebase-a7bb8.firebaseapp.com",
+      databaseURL: "https://test-firebase-a7bb8-default-rtdb.asia-southeast1.firebasedatabase.app",
+      projectId: "test-firebase-a7bb8",
+      storageBucket: "test-firebase-a7bb8.appspot.com",
+      messagingSenderId: "1068724998824",
+      appId: "1:1068724998824:web:87a61749492299bdbaa89d"
+      };
+
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth();
+    const database = getDatabase(app);
+
+    // Function to handle updating the username
+const updateUsername = () => {
+  const newUsername = document.getElementById("new-username").value;
+  const user = auth.currentUser;
+  if (user) {
+    
+    update(ref(database, 'users/' + user.uid), {
+      username: newUsername,
+    })
+      .then(() => {
+        alert("Username updated successfully!");
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  }
+};
+
+const updateEmailAddress = () => {
+      const user = auth.currentUser;
+      if (user) {
+        const newEmail = document.getElementById("new-email").value;
+        
+        return updateEmail(user, newEmail)
+          .then(() => {
+            // Email updated successfully
+            
+           return update(ref(database, 'users/' + user.uid), {
+          email: newEmail,
+          });
+          alert("Email address updated successfully!");
+            
+          })
+          .catch((error) => {
+            // An error occurred while updating the email
+            alert("Error updating email address: " + error.message);
+          });
+      }
+    };
+
+// Function to handle updating the password
+const changePassword = () => {
+  const user = auth.currentUser;
+  if (user) {
+    const newPassword = document.getElementById("new-password").value;
+    updatePassword(user, newPassword)  
+    .then(() => {
+        alert("Password updated successfully!");
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  }
+};
+// const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+//   if (!isLoggedIn) {
+//     // If the user is not logged in, redirect back to the login page
+//     window.location.href = "index.html";
+//   } else {
+    // The user is logged in, you can proceed with your user information update logic
+    // ...
+    // Listen for the "Update Username" button click
+document.getElementById("update-username").addEventListener("click", updateUsername);
+
+// Listen for the "Update Email" button click
+document.getElementById("update-email").addEventListener("click", updateEmailAddress);
+
+// Listen for the "Update Password" button click
+document.getElementById("update-password").addEventListener("click", changePassword);
+  //}
+
+
+    
+
+// console.log("auth.currentUser:", auth.currentUser);
+
+// // You can also try using `onAuthStateChanged` to handle authentication state changes
+// onAuthStateChanged(auth, (user) => {
+//   console.log("Auth state changed. Current user:", user);
+//   if (user) {
+//     // User is logged in, you can access their information here
+//     console.log("User is logged in:", user.uid);
+//     // You can update user information here if needed
+//   } else {
+//     console.log("User is not logged in.");
+//     // Redirect the user to the login page or display a message
+//   }
+// })
+  </script>
+</html>

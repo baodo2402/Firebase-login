@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>Firebase Auth</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+
+  <body>
+    <div class="Title">
+      <h1>Web Development</h1>
+    </div>
+    <div id="login-box">
+      <form class="register">
+        <h1 class="register_heading">Register</h1>
+
+        <label for="username">Username:</label>
+        <input type="text" id="username" name="username" placeholder="username" />
+
+        <label for="gender">Gender:</label>
+        <select id="gender" name="gender">
+          <option value="male">Male</option>
+          <option value="female">Female</option>
+          <option value="other">Other</option>
+        </select>
+
+        <label for="email">Email:</label>
+        <input type="text" id="email" name="email" placeholder="E-mail" />
+
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password" placeholder="Password" />
+
+        <input type="submit" id="signup" name="signup_submit" value="Register" />
+      </form>
+
+      <form class="log_in">
+        <h1 class="login_heading">Log in</h1>
+        
+        <label for="login-email">Email:</label>
+        <input type="text" id="login-email" name="email" placeholder="E-mail" />
+
+        <label for="login-password">Password:</label>
+        <input type="password" id="login-password" name="password" placeholder="Password" />
+
+        <input type="submit" id="login" name="login_submit" value="Log in" />
+      </form>
+    </div>
+
+  </body>
+
+
+
+
+
+
+
+
+
+    <script type="module">
+      // Import the functions you need from the SDKs you need
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-app.js";
+      import { getDatabase, ref, set, update } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-database.js";
+      import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-auth.js";
+
+        // Your web app's Firebase configuration
+        const firebaseConfig = {
+        apiKey: "AIzaSyBZxcfIFnaEEBX7z5oI_BWarYpG2txmH3M",
+        authDomain: "test-firebase-a7bb8.firebaseapp.com",
+        databaseURL: "https://test-firebase-a7bb8-default-rtdb.asia-southeast1.firebasedatabase.app",
+        projectId: "test-firebase-a7bb8",
+        storageBucket: "test-firebase-a7bb8.appspot.com",
+        messagingSenderId: "1068724998824",
+        appId: "1:1068724998824:web:87a61749492299bdbaa89d"
+        };
+
+      // Initialize Firebase
+      const app = initializeApp(firebaseConfig);
+      const database = getDatabase(app);
+      const auth = getAuth();
+      
+
+      
+      document.addEventListener("DOMContentLoaded", function () {
+        //register
+        const signupButton = document.getElementById("signup");
+        signupButton.addEventListener("click", (e) => {
+          e.preventDefault();
+          const email = document.getElementById("email").value;
+          const password = document.getElementById("password").value;
+          const username = document.getElementById("username").value;
+          const gender = document.getElementById("gender").value;
+
+          createUserWithEmailAndPassword(auth, email, password)
+            .then((userCredential) => {
+              // Signed in
+              const user = userCredential.user;
+              
+
+              // Store user data in the Realtime Database
+               const userRef = ref(database, 'users/' + user.uid);
+               set(userRef, {
+                 username: username,
+                 email: email,
+                 gender: gender,
+               });
+              //..
+              ;
+               alert("User created");
+             })
+             .catch((error) => {
+               const errorCode = error.code;
+               const errorMessage = error.message;
+               alert(errorMessage);
+             });
+
+              
+             
+      });
+
+      });
+
+
+
+          // Function to handle successful login
+        const handleSuccessfulLogin = (user) => {
+          // Store the user's login state in localStorage
+          localStorage.setItem('isLoggedIn', 'true');
+          //
+          localStorage.setItem('userEmail', user.email);
+          localStorage.setItem('username', user.username);
+          localStorage.setItem('userPassword', user.password);
+
+          // Redirect to the account page
+          window.location.href = "account.html";
+        };
+
+      document.addEventListener("DOMContentLoaded", function () {
+        //login
+        const loginButton = document.getElementById("login");
+        loginButton.addEventListener("click", (e) => {
+          e.preventDefault();
+          var email = document.getElementById('login-email').value;
+          var password = document.getElementById('login-password').value;
+          signInWithEmailAndPassword(auth, email, password)
+            .then((userCredential) => {
+            // ...
+            // Log in 
+          const user = userCredential.user;
+          
+          //GETTING REALTIME DATABASE
+          const date = new Date();
+          update(ref(database, 'users/' + user.uid), {
+          last_login: date, 
+          });
+          
+           handleSuccessfulLogin(user);
+           alert('User logged in');
+          })
+        })
+        .catch((error) => {
+          const errorCode = error.code;
+          const errorMessage = error.message;
+
+          console.log(errorCode); // Log the error code to the console
+          console.log(errorMessage); // Log the error message to the console
+          alert(errorMessage);
+        });
+      });
+
+
+    </script>
+
+</html>
